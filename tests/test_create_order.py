@@ -16,57 +16,48 @@ class TestCreateOrder:
         with allure.step(f"Отправка запроса на создание заказа с токеном и ингредиентами: {valid_ingredients}"):
             response = create_order(valid_ingredients, auth_token)
         
-        with allure.step("Проверка статуса ответа 200"):
-            assert response.status_code == 200
-        
         data = response.json()
-        with allure.step("Проверка наличия номера заказа"):
-            assert data["success"] is True
-            assert "order" in data
-            assert "number" in data["order"]
+        
+        assert response.status_code == 200
+        assert data["success"] is True
+        assert "order" in data
+        assert "number" in data["order"]
     
     @allure.title("Создание заказа без авторизации")
     def test_create_order_without_auth(self, valid_ingredients):
         with allure.step(f"Отправка запроса на создание заказа без токена с ингредиентами: {valid_ingredients}"):
             response = create_order(valid_ingredients)
         
-        with allure.step("Проверка статуса ответа 200"):
-            assert response.status_code == 200
-        
         data = response.json()
-        with allure.step("Проверка наличия номера заказа"):
-            assert data["success"] is True
-            assert "order" in data
-            assert "number" in data["order"]
+        
+        assert response.status_code == 200
+        assert data["success"] is True
+        assert "order" in data
+        assert "number" in data["order"]
     
     @allure.title("Создание заказа с ингредиентами")
     def test_create_order_with_ingredients(self, auth_token, valid_ingredients):
         with allure.step(f"Отправка запроса на создание заказа с валидными ингредиентами: {valid_ingredients}"):
             response = create_order(valid_ingredients, auth_token)
         
-        with allure.step("Проверка статуса ответа 200"):
-            assert response.status_code == 200
-        
         data = response.json()
-        with allure.step("Проверка успешного создания заказа"):
-            assert data["success"] is True
+        
+        assert response.status_code == 200
+        assert data["success"] is True
     
     @allure.title("Создание заказа без ингредиентов")
     def test_create_order_without_ingredients(self, auth_token):
         with allure.step("Отправка запроса на создание заказа без ингредиентов"):
             response = create_order([], auth_token)
         
-        with allure.step("Проверка статуса ответа 400"):
-            assert response.status_code == 400
-        
         data = response.json()
-        with allure.step("Проверка сообщения об ошибке"):
-            assert data["message"] == ERROR_MESSAGES["no_ingredients"]
+        
+        assert response.status_code == 400
+        assert data["message"] == ERROR_MESSAGES["no_ingredients"]
     
     @allure.title("Создание заказа с неверным хешем ингредиентов")
     def test_create_order_with_invalid_ingredients(self, auth_token, invalid_ingredients):
         with allure.step(f"Отправка запроса на создание заказа с невалидными хешами: {invalid_ingredients}"):
             response = create_order(invalid_ingredients, auth_token)
         
-        with allure.step("Проверка статуса ответа 500"):
-            assert response.status_code == 500
+        assert response.status_code == 500

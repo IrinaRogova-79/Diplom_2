@@ -19,13 +19,11 @@ class TestLoginUser:
         with allure.step(f"Отправка запроса на логин с email: {email}"):
             response = login_user(email, password)
         
-        with allure.step("Проверка статуса ответа 200"):
-            assert response.status_code == 200
-        
         data = response.json()
-        with allure.step("Проверка наличия токена в ответе"):
-            assert "accessToken" in data
-            assert data["user"]["email"] == email
+        
+        assert response.status_code == 200
+        assert "accessToken" in data
+        assert data["user"]["email"] == email
     
     @allure.title("Вход с неверным логином")
     def test_login_with_invalid_email(self, test_user):
@@ -34,12 +32,10 @@ class TestLoginUser:
         with allure.step(f"Отправка запроса на логин с неверным email: {INVALID_EMAIL}"):
             response = login_user(INVALID_EMAIL, password)
         
-        with allure.step("Проверка статуса ответа 401"):
-            assert response.status_code == 401
-        
         data = response.json()
-        with allure.step("Проверка сообщения об ошибке"):
-            assert data["message"] == ERROR_MESSAGES["invalid_credentials"]
+        
+        assert response.status_code == 401
+        assert data["message"] == ERROR_MESSAGES["invalid_credentials"]
     
     @allure.title("Вход с неверным паролем")
     def test_login_with_invalid_password(self, test_user):
@@ -48,21 +44,17 @@ class TestLoginUser:
         with allure.step(f"Отправка запроса на логин с неверным паролем"):
             response = login_user(email, INVALID_PASSWORD)
         
-        with allure.step("Проверка статуса ответа 401"):
-            assert response.status_code == 401
-        
         data = response.json()
-        with allure.step("Проверка сообщения об ошибке"):
-            assert data["message"] == ERROR_MESSAGES["invalid_credentials"]
+        
+        assert response.status_code == 401
+        assert data["message"] == ERROR_MESSAGES["invalid_credentials"]
     
     @allure.title("Вход с неверным логином и паролем")
     def test_login_with_invalid_credentials(self):
         with allure.step(f"Отправка запроса на логин с неверными данными"):
             response = login_user(INVALID_EMAIL, INVALID_PASSWORD)
         
-        with allure.step("Проверка статуса ответа 401"):
-            assert response.status_code == 401
-        
         data = response.json()
-        with allure.step("Проверка сообщения об ошибке"):
-            assert data["message"] == ERROR_MESSAGES["invalid_credentials"]
+        
+        assert response.status_code == 401
+        assert data["message"] == ERROR_MESSAGES["invalid_credentials"]
